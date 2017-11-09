@@ -4,4 +4,11 @@ Program Stats
     print *,"Input name of file to read: "
     read  (*, *) f 
     print *,f
+    call READAR
 End Program Stats
+
+
+Subroutine READAR
+    print *, "Hello"
+    return
+    end
