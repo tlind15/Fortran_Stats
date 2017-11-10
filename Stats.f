@@ -1,14 +1,17 @@
        Program Stats
 
-       character(len=25) :: f
-       real, dimension(:), allocatable :: array
-       integer :: size
-       print *, "Input size of the array: "
-       read *, size
-       allocate(array(size))
-       call READAR(array, size)
-       print *, array
-       deallocate(array)
+       ! --- Need this interface to pass allocatable argument into the subroutine ---
+       interface
+       subroutine READAR(grades)
+       real, allocatable, intent(out) :: grades(:)
+       end subroutine
+       end interface 
+
+       ! --- Declaration ---
+       real, allocatable :: grades(:)
+       ! --- End declaration ---
+
+       call READAR(grades)
        End Program Stats
 
        Subroutine READAR(array, size)
@@ -19,3 +22,4 @@
        end do
        return
        end
+ 
