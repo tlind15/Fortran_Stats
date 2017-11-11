@@ -24,7 +24,7 @@
 
        call READAR(grades, count)
        call SHELL(grades, count)
-       print *, grades
+       call WRITEAR(grades, count)
        deallocate(grades)
        End Program Stats
 
@@ -95,6 +95,22 @@
        integer :: temp
        ! ----------------------------------------------------------
 
+       
+       !---Error checking/check for small sized array---
+       if(size == 0 .or. size == 1) then
+       		go to 5
+
+       else if (size == 2) then
+       		if (array(2) < array(1)) then
+       			temp = array(1)
+       			array(1) = array(2)
+       			array(2) = temp
+       		end if
+       		go to 5
+       end if
+       !-----------------------------------------------
+
+
        sequence = (/57, 23, 10, 4, 1/) !Marcin Ciura optimal shell sort gap sequence
 
        !i --> count of iteratation through all the gap sizes in the above sequence
@@ -156,19 +172,63 @@
 
        		!---optimize when gap = 1 and skip rest of j loop ---	
        		if (gap == 1) then
-       			go to 5
+       			go to 4
    			end if
    			!----------------finish optimization-----------------
 
        		end do  !end do j loop
 
- 5      end if
+ 4      end if
  		!--------------------------------finish sort for one gap size------------------------------------
 
        end do
        !-------------------------------finish iterating through gap sizes--------------------------------
 
-       return 
+ 5     return 
        end
 
        ! ====================================End SHELL Subroutine ============================================ 
+
+
+
+       !================================= WRITEAR Subroutine =====================================
+
+       !prints the contents of an array in 6 columns per line
+
+       Subroutine WRITEAR(array, size)
+
+       !------------Declarations--------------------
+       integer, intent(in) :: size
+       real, intent(in) :: array(1:size)
+       character(len=100) :: format
+       !--------------------------------------------
+
+       !---Error checking/check for small array---
+       if (size < 0) then
+       		go to 1
+
+       else if (size == 0) then
+       		print *, ""
+       		go to 1
+       end if
+       !------------------------------------------
+
+       !---Print each array element---
+
+ 	   format = "(F10.2, T2, T2)"
+       do i = 1, size
+        WRITE (*, format, advance='no') array(i)
+       	
+        if (mod(i,6) == 0) then
+       		print *, ""
+        end if
+
+       	
+
+       end do
+       !------------------------------
+
+1      return
+       end
+       !====================================== End WRITEAR =======================================
+
