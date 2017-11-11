@@ -81,7 +81,7 @@
 
 
 
-       ! ================ SHELL Subroutine =======================
+       ! ====================================== SHELL Subroutine ============================================
 
        ! sorts the array in ascending order
 
@@ -97,35 +97,78 @@
 
        sequence = (/57, 23, 10, 4, 1/) !Marcin Ciura optimal shell sort gap sequence
 
-       do i = 1, 5 !iterate through all the gap sizes in the above sequence
+       !i --> count of iteratation through all the gap sizes in the above sequence
+       !j --> the jth element in array. It also represents the 1st element in each gapped sub-array
+       !k --> the number of gaps away we are from element j
+       !l --> the index of the current element of interest
+       !m --> the number of gaps back from element array(l)
+
+       !-------------------------------Iterate through all gap sizes---------------------------------------
+       do i = 1, 5
        	gap = sequence(i)
+
+       	 !-----------------------Only use gaps that are smaller than array size----------------------------
  1       if (gap < size) then
-       		do j = 1, size 
+       		do j = 1, size
+
+       		!--------Iterate through gaps starting at jth element---------------
        			k = 1
  2       		if (j + k*gap <= size) then
        				l = j + k*gap
-       				m = 0
- 3       			if (k - m >= 1 .AND. array(l) <= array(j+(k-m-1)*gap)) then
+
+       				m = 1
+       				!----compare array(l) to element that is m gaps back------
+
+       				!we can only go back at most k gaps since that will bring
+       				!us to element j which is the first element of the sub-array
+
+ 3       			if (k - m >= 0 .AND. array(l) <= array(l - m*gap)) then
        					m = m+1
        					go to 3
-       				else if (m > 0) then
-       					do n = 1, m
+       				!----------------------------------------------------------	
+
+
+       				!------shift the previous m-1 elements in sub-array to the right by one gap------
+
+       				!we accomplish this shift by performing m-1 swaps 
+
+       				else if (m > 1) then
+       					do n = 2, m
+       					 !--------Swap-------------
        					 temp = array(l - gap)
        					 array(l - gap) = array(l)
        					 array(l) = temp
+       					 !-------------------------
+
        					 l = l - gap
        					end do	
        				end if
+       				!-----------------------finish shifting elements----------------------------------
+
+       				!---Increment k and repeat---
        				k = k + 1
        				go to 2
+       				!----------------------------
+
        			end if
+       			!----------------finish iteration through gaps ---------------------
+       		
+
+       		!---optimize when gap = 1 and skip rest of j loop ---	
        		if (gap == 1) then
        			go to 5
    			end if
-       		end do 
+   			!----------------finish optimization-----------------
+
+       		end do  !end do j loop
+
  5      end if
+ 		!--------------------------------finish sort for one gap size------------------------------------
+
        end do
+       !-------------------------------finish iterating through gap sizes--------------------------------
+
        return 
        end
 
-       ! =============== End SHELL Subroutine ==================== 
+       ! ====================================End SHELL Subroutine ============================================ 
