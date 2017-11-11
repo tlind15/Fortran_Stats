@@ -20,11 +20,25 @@
        ! --------------------- Declaration -------------------------------
        real, allocatable :: grades(:) !grades array to be allocated later
        integer :: count !the number of grades in the file
+       real :: min
        ! -----------------------------------------------------------------
 
        call READAR(grades, count)
-       call SHELL(grades, count)
+       print *, "" !add a new line for aesthetics
+
+       print *, "Original Array"
        call WRITEAR(grades, count)
+
+       call SHELL(grades, count)
+
+       print *, "Sorted Array"
+       call WRITEAR(grades, count)
+
+       
+       print *, "The minimum is", grades(1)
+       print *, "The maximum is", grades(count)
+       print *, "The range is", grades(count) - grades(1)
+
        deallocate(grades)
        End Program Stats
 
@@ -200,7 +214,7 @@
        !------------Declarations--------------------
        integer, intent(in) :: size
        real, intent(in) :: array(1:size)
-       character(len=100) :: format
+       character(len=100) :: format  !will hold string for output format with write function
        !--------------------------------------------
 
        !---Error checking/check for small array---
@@ -215,18 +229,19 @@
 
        !---Print each array element---
 
- 	   format = "(F10.2, T2, T2)"
+ 	   format = "(F10.2, T2, T2)" !real number with two spots after decimal, followed by tab
        do i = 1, size
-        WRITE (*, format, advance='no') array(i)
+        write (*, format, advance='no') array(i)
        	
-        if (mod(i,6) == 0) then
+        if (mod(i,6) == 0) then  !after the 6 entry, add a newline
        		print *, ""
         end if
 
-       	
-
        end do
        !------------------------------
+
+       print *, "" !add a new line for aesthetics
+       print *, "" !add a new line for aesthetics
 
 1      return
        end
