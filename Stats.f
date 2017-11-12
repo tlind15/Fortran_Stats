@@ -37,24 +37,37 @@
        call READAR(grades, count)
        print *, "" !add a new line for aesthetics
 
-       print *, "Original Array"
-       call WRITEAR(grades, count)
+       if (count <= 0) then
+        	print *, "Original Array <empty>"
+        	print *, "Sorted Array <empty>"
+       		print *, "The minimum is ", "NaN"
+       		print *, "The maximum is ", "NaN"
+       		print *, "The range is ", "NaN"
+       		print *, "The mean is ", "NaN"
+       		print *, "The median is ", "NaN"
+       		print *, "The variance is ", "NaN"
+       		print *, "The standard deviation is ", "NaN"
+       else
+       		print *, "Original Array"
+       		call WRITEAR(grades, count)
 
-       call SHELL(grades, count)
+       		call SHELL(grades, count)
 
-       print *, "Sorted Array"
-       call WRITEAR(grades, count)
+       		print *, "Sorted Array"
+       		call WRITEAR(grades, count)
 
-     
-       print *, "The minimum is", grades(1)
-       print *, "The maximum is", grades(count)
-       print *, "The range is", grades(count) - grades(1)
-       print *, "The mean is", Mean(grades, count)
-       print *, "The median is", Median(grades, count)
+        	print *, "The minimum is", grades(1)
+       		print *, "The maximum is", grades(count)
+       		print *, "The range is", grades(count) - grades(1)
+       		print *, "The mean is", Mean(grades, count)
+       		print *, "The median is", Median(grades, count)
 
-       value_variance = Variance(grades, count)
-       print *, "The variance is", value_variance
-       print *, "The standard deviation is", value_variance ** 0.5
+      		value_variance = Variance(grades, count)
+       		print *, "The variance is", value_variance
+       		print *, "The standard deviation is", value_variance ** 0.5
+       end if
+
+       
 
        deallocate(grades)
        End Program Stats
@@ -233,10 +246,7 @@
        !--------------------------------------------
 
        !---Error checking/check for small array---
-       if (size < 0) then
-       		go to 1
-
-       else if (size == 0) then
+       if (size <= 0) then
        		print *, ""
        		go to 1
        end if
@@ -276,6 +286,13 @@
        real :: sum
        !---------------------------------
 
+       if (size <= 0) then
+       		go to 1
+       	else if (size == 1) then
+       		Mean = array(1)
+       		go to 1
+       	end if
+
        sum = 0
        do i = 1, size
        		sum = sum + array(i)
@@ -283,7 +300,7 @@
 
        Mean = sum/size
 
-       return
+ 1     return
        end
        !========================== End Function - Mean =========================
 
@@ -300,6 +317,14 @@
        real, intent(in) :: array(1:size)
        !----------------------------------
 
+       if (size <= 0) then
+       		go to 1
+       else if (size == 1) then
+       		Median = array(1)
+       		go to 1
+       end if
+
+
        !the set of numbers is even, then we compute the average of the two middle numbers
        if(mod(size,2) == 0) then 
        		Median = (array(size/2) + array(size/2 + 1))/2
@@ -309,7 +334,7 @@
        		Median = array(size/2 + 1)
        end if
 
-       return 
+ 1    return 
        end
        !=========================== End Function - Median ===============================
 
@@ -329,6 +354,13 @@
        real :: sum !the aggregate sum of all (number - avg) **2 operations
        !------------------------------------------------------------------
 
+       if (size <= 0) then
+       		go to 1
+       else if (size == 1) then
+       		Variance = 0
+       		go to 1
+       end if
+
        avg = Mean(array, size)
        sum = 0
 
@@ -338,6 +370,6 @@
 
        Variance = sum/size
 
-       return
+ 1     return
        end
        !========================== End Function - Variance ===========================
