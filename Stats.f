@@ -1,4 +1,5 @@
        Program Stats
+       implicit none
 
        ! ======================= Program Interface ===================================
        ! Need this interface to pass allocatable argument into the subroutine 
@@ -20,7 +21,10 @@
        ! --------------------- Declaration -------------------------------
        real, allocatable :: grades(:) !grades array to be allocated later
        integer :: count !the number of grades in the file
-       real :: min
+       real :: Mean !this is a delcaration of the function Mean
+       real :: Median !this is the delcaration of the function Median
+       real :: Variance !this is the delcaration of the function Variance
+       real :: value_variance 
        ! -----------------------------------------------------------------
 
        call READAR(grades, count)
@@ -34,10 +38,16 @@
        print *, "Sorted Array"
        call WRITEAR(grades, count)
 
-       
+     
        print *, "The minimum is", grades(1)
        print *, "The maximum is", grades(count)
        print *, "The range is", grades(count) - grades(1)
+       print *, "The mean is", Mean(grades, count)
+       print *, "The median is", Median(grades, count)
+
+       value_variance = Variance(grades, count)
+       print *, "The variance is", value_variance
+       print *, "The standard deviation is", value_variance ** 0.5
 
        deallocate(grades)
        End Program Stats
@@ -247,3 +257,76 @@
        end
        !====================================== End WRITEAR =======================================
 
+
+
+       !================== Function - Mean ======================
+
+       !this function calculates the mean of a set of numbers
+
+       Real function Mean(array, size)
+       !-------Declarations---------------
+       integer, intent(in) :: size
+       real, intent(in) :: array(1:size)
+       real :: sum
+       !---------------------------------
+
+       sum = 0
+       do i = 1, size
+       		sum = sum + array(i)
+       end do
+
+       Mean = sum/size
+
+       return
+       end
+       !================ End Function - Mean ===================
+
+
+
+       !=============== Function - Median ======================
+
+       !this function computes the median of a set of numbers
+
+       Real function Median(array, size)
+       !------------Declarations-----------------
+       integer, intent(in) :: size
+       real, intent(in) :: array(1:size)
+       !-----------------------------------------
+
+       if(mod(size,2) == 0) then
+       		Median = (array(size/2) + array(size/2 + 1))/2
+       else
+       		Median = array(size/2 + 1)
+       end if
+
+       return 
+       end
+       !=====================================================
+
+
+
+       !======== Function - Variance ============
+
+       !computes the variance of a set of numbers
+
+       Real function Variance (array, size)
+       !------------Declarations----------
+       integer, intent(in) :: size
+       real, intent(in) :: array(1:size)
+       real :: Mean
+       real :: avg
+       real :: sum
+       !----------------------------------
+
+       avg = Mean(array, size)
+       sum = 0
+
+       do i= 1, size
+       		sum = (array(i) - avg) ** 2
+       end do
+
+       Variance = sum/size
+
+       return
+       end
+       !=========================================
