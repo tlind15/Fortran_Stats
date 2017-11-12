@@ -79,7 +79,7 @@
        ! -------------------------------------------------------
        
        ! ------ Determine number of grade entries -----
-       print *, "Input name of grades file: "
+       write (*,"(A30)", advance="no") "Input name of grades file: "
        read *, ftext
        count = 0
        open (unit = 1, file = ftext)
