@@ -98,12 +98,12 @@
        open (unit = 1, file = ftext)
 
        ! --- loop while not EOF ---
- 3     read(1,*,end=5) !if EOF, go to 5, otherwise read
+ 3     read(1,*,end=4) !if EOF, go to 4, otherwise read
        count = count + 1
        go to 3
        ! ----- finish looping -----
 
- 5     close(1)
+ 4     close(1)
        ! --------- finish number of entries -----------
        
        
@@ -111,10 +111,18 @@
        allocate(grades(1:count))
        open (unit = 2, file = ftext)
        do i = 1, count
-       	read (2,*) grades(i) !put grades values into array
+       	read (2,*, end=5) grades(i) !put grades values into array, go to 5 if EOF found earlier than expected
        end do
-       close(2)
-       ! ---------- finish reading in grades -------------
+       
+       !loop terminated normally
+       go to 6
+       
+       !loop reached end of file before performing count number of iterations
+ 5	   count = 0 
+
+       
+ 6     close(2) 
+       ! ---------- finish reading in grades -------------     
 
        return
        end
