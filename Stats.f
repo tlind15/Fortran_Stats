@@ -16,16 +16,23 @@
 
 
 
-       ! =============== Begin Main program ==============================
+       ! =================================== Begin Main program =============================================
 
-       ! --------------------- Declaration -------------------------------
+       ! ----------------------------------- Declaration ----------------------------------------------------
        real, allocatable :: grades(:) !grades array to be allocated later
        integer :: count !the number of grades in the file
+
+       !The minimum can easily be determined from the sorted array so no function needed
+       !The maximum can easily be determined from the sorted array so no function needed
+       !The range can easily be determined from the sorted array so no function needed
+
        real :: Mean !this is a delcaration of the function Mean
        real :: Median !this is the delcaration of the function Median
        real :: Variance !this is the delcaration of the function Variance
-       real :: value_variance 
-       ! -----------------------------------------------------------------
+       real :: value_variance !we do not want to call the Variance function again to find standard deviation
+
+       !The standard deviation can calculated as (Variance) ** 0.5 so no function needed
+       ! ----------------------------------------------------------------------------------------------------
 
        call READAR(grades, count)
        print *, "" !add a new line for aesthetics
@@ -53,7 +60,6 @@
        End Program Stats
 
        ! ================ End Main Program ===============================
-
 
 
 
@@ -100,8 +106,7 @@
        return
        end
 
-       ! ================ End READAR Subroutine ==================
-
+       ! ==================================== End READAR Subroutine =========================================
 
 
 
@@ -241,11 +246,11 @@
 
  	   format = "(F10.2, T2, T2)" !real number with two spots after decimal, followed by tab
        do i = 1, size
-        write (*, format, advance='no') array(i)
+        	write (*, format, advance='no') array(i)
        	
-        if (mod(i,6) == 0) then  !after the 6 entry, add a newline
-       		print *, ""
-        end if
+        	if (mod(i,6) == 0) then  !after the 6 entry, add a newline
+       			print *, ""
+        	end if
 
        end do
        !------------------------------
@@ -259,12 +264,13 @@
 
 
 
-       !================== Function - Mean ======================
+       !========================== Function - Mean ==============================
 
        !this function calculates the mean of a set of numbers
+       !Mean is the implicit variable that holds the return value of the function
 
        Real function Mean(array, size)
-       !-------Declarations---------------
+       !-----------Declarations----------
        integer, intent(in) :: size
        real, intent(in) :: array(1:size)
        real :: sum
@@ -279,44 +285,49 @@
 
        return
        end
-       !================ End Function - Mean ===================
+       !========================== End Function - Mean =========================
 
 
 
-       !=============== Function - Median ======================
+       !=========================== Function - Median ====================================
 
        !this function computes the median of a set of numbers
+       !Median is the implicit variable that holds the return value of the function
 
        Real function Median(array, size)
-       !------------Declarations-----------------
+       !------------Declarations----------
        integer, intent(in) :: size
        real, intent(in) :: array(1:size)
-       !-----------------------------------------
+       !----------------------------------
 
-       if(mod(size,2) == 0) then
+       !the set of numbers is even, then we compute the average of the two middle numbers
+       if(mod(size,2) == 0) then 
        		Median = (array(size/2) + array(size/2 + 1))/2
-       else
+       
+       !the set of numbers is odd, the result is simply the middle number
+       else 
        		Median = array(size/2 + 1)
        end if
 
        return 
        end
-       !=====================================================
+       !=========================== End Function - Median ===============================
 
 
 
-       !======== Function - Variance ============
+       !============================ Function - Variance =============================
 
        !computes the variance of a set of numbers
+       !Variance is the implicit variable that holds the return value of the function
 
        Real function Variance (array, size)
-       !------------Declarations----------
+       !--------------------------Declarations----------------------------
        integer, intent(in) :: size
        real, intent(in) :: array(1:size)
-       real :: Mean
-       real :: avg
-       real :: sum
-       !----------------------------------
+       real :: Mean !delcaration for the function - Mean
+       real :: avg !the return value of the Mean function call
+       real :: sum !the aggregate sum of all (number - avg) **2 operations
+       !------------------------------------------------------------------
 
        avg = Mean(array, size)
        sum = 0
@@ -329,4 +340,4 @@
 
        return
        end
-       !=========================================
+       !========================== End Function - Variance ===========================
