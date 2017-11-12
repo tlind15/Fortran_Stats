@@ -1,3 +1,4 @@
+       !=========================================================Program Stats=========================================================
        Program Stats
        implicit none
 
@@ -67,16 +68,14 @@
        		print *, "The standard deviation is", value_variance ** 0.5
        end if
 
-       
-
        deallocate(grades)
        End Program Stats
 
-       ! ================ End Main Program ===============================
+       ! ======================================= End Main Program ==========================================
 
 
 
-       ! =================== READAR Subroutine ====================
+       ! ======================================= READAR Subroutine =========================================
 
        !  -opens a user inputted file
        !  -counts the number of entries in the file
@@ -91,7 +90,7 @@
        character (len=100) :: ftext !the path of the grades file
        ! -------------------------------------------------------
        
-       ! ------ Determine number of grade entries -----
+       ! ------------- Determine number of grade entries --------------
        write (*,"(A30)", advance="no") "Input name of grades file: "
        read *, ftext
        count = 0
@@ -104,10 +103,10 @@
        ! ----- finish looping -----
 
  4     close(1)
-       ! --------- finish number of entries -----------
+       ! ------------------ finish number of entries ------------------
        
        
-       ! ----------- Read in grades to array ------------- 
+       ! ----------------------------------- Read in grades to array ----------------------------------------- 
        allocate(grades(1:count))
        open (unit = 2, file = ftext)
        do i = 1, count
@@ -119,10 +118,9 @@
        
        !loop reached end of file before performing count number of iterations
  5	   count = 0 
-
-       
+      
  6     close(2) 
-       ! ---------- finish reading in grades -------------     
+       ! ----------------------------------- finish reading in grades ----------------------------------------     
 
        return
        end
@@ -131,7 +129,7 @@
 
 
 
-       ! ====================================== SHELL Subroutine ============================================
+       ! ==================================================== SHELL Subroutine ============================================================
 
        ! sorts the array in ascending order
 
@@ -146,7 +144,7 @@
        ! ----------------------------------------------------------
 
        
-       !---Error checking/check for small sized array---
+       !-----Error checking/check for small sized array-----
        if(size == 0 .or. size == 1) then
        		go to 5
 
@@ -158,7 +156,7 @@
        		end if
        		go to 5
        end if
-       !-----------------------------------------------
+       !---------------------------------------------------
 
 
        sequence = (/57, 23, 10, 4, 1/) !Marcin Ciura optimal shell sort gap sequence
@@ -166,25 +164,25 @@
        !i --> count of iteratation through all the gap sizes in the above sequence
        !j --> the jth element in array. It also represents the 1st element in each gapped sub-array
        !k --> the number of gaps away we are from element j
-       !l --> the index of the current element of interest
+       !l --> the index of the current element of interest (that is some number of gaps away from the jth element)
        !m --> the number of gaps back from element array(l)
 
-       !-------------------------------Iterate through all gap sizes---------------------------------------
+       !-----------------------------------------Iterate through each gap size in above sequence---------------------------------------
        do i = 1, 5
        	gap = sequence(i)
 
-       	 !-----------------------Only use gaps that are smaller than array size----------------------------
- 1       if (gap < size) then
+       	 !make sure the gap size we use is smaller than the array itself
+ 1       if (gap < size) then 
+            !------------------------ Begin sort for all sub-arrays for a single gap size-----------------------------
        		do j = 1, size
 
-       		!--------Iterate through gaps starting at jth element---------------
+       		!----------------- Begin sort for a single sub-array starting at jth element ----------------
        			k = 1
  2       		if (j + k*gap <= size) then
        				l = j + k*gap
 
        				m = 1
-       				!----compare array(l) to element that is m gaps back------
-
+       				!----compare array(l) to element that is m gaps back-------
        				!we can only go back at most k gaps since that will bring
        				!us to element j which is the first element of the sub-array
 
@@ -195,7 +193,6 @@
 
 
        				!------shift the previous m-1 elements in sub-array to the right by one gap------
-
        				!we accomplish this shift by performing m-1 swaps 
 
        				else if (m > 1) then
@@ -217,27 +214,30 @@
        				!----------------------------
 
        			end if
-       			!----------------finish iteration through gaps ---------------------
+       		!-------------------------------finish sort for single sub-array--------------------------------
        		
 
-       		!---optimize when gap = 1 and skip rest of j loop ---	
+       		!-----------------------------optimize when gap = 1------------------------------------
+       		!when gap = 1, there is only 1 sub-array (that sub-array is actually the entire array)
+       		!Thus we can skip the rest of the j loop
+
        		if (gap == 1) then
        			go to 4
    			end if
-   			!----------------finish optimization-----------------
+   			!-------------------------------finish optimization------------------------------------
 
        		end do  !end do j loop
 
  4      end if
- 		!--------------------------------finish sort for one gap size------------------------------------
+ 		!----------------------------finish sort for all sub-arrays for a single gap size-------------------------------
 
-       end do
-       !-------------------------------finish iterating through gap sizes--------------------------------
+       end do !end do i loop
+       !------------------------------------------finish iterating through all gap sizes------------------------------------------------
 
  5     return 
        end
 
-       ! ====================================End SHELL Subroutine ============================================ 
+       ! ====================================================End SHELL Subroutine ====================================================== 
 
 
 
@@ -253,15 +253,14 @@
        character(len=100) :: format  !will hold string for output format with write function
        !--------------------------------------------
 
-       !---Error checking/check for small array---
+       !-----Error checking/check for small array-----
        if (size <= 0) then
        		print *, ""
        		go to 1
        end if
-       !------------------------------------------
+       !----------------------------------------------
 
-       !---Print each array element---
-
+       !---------------------------Print each array element----------------------------------
  	   format = "(F10.2, T2, T2)" !real number with two spots after decimal, followed by tab
        do i = 1, size
         	write (*, format, advance='no') array(i)
@@ -271,7 +270,7 @@
         	end if
 
        end do
-       !------------------------------
+       !-------------------------------------------------------------------------------------
 
        print *, "" !add a new line for aesthetics
        print *, "" !add a new line for aesthetics
@@ -294,19 +293,23 @@
        real :: sum
        !---------------------------------
 
+       !-----Error checking/check for small array-----
        if (size <= 0) then
        		go to 1
        	else if (size == 1) then
        		Mean = array(1)
        		go to 1
        	end if
+       !----------------------------------------------
 
+       !----------Compute Value----------
        sum = 0
        do i = 1, size
        		sum = sum + array(i)
        end do
 
        Mean = sum/size
+       !---------------------------------
 
  1     return
        end
@@ -325,14 +328,17 @@
        real, intent(in) :: array(1:size)
        !----------------------------------
 
+       !-----Error checking/check for small array-----
        if (size <= 0) then
        		go to 1
        else if (size == 1) then
        		Median = array(1)
        		go to 1
        end if
+       !----------------------------------------------
 
 
+       !------------------------------Compute Value--------------------------------------
        !the set of numbers is even, then we compute the average of the two middle numbers
        if(mod(size,2) == 0) then 
        		Median = (array(size/2) + array(size/2 + 1))/2
@@ -341,6 +347,7 @@
        else 
        		Median = array(size/2 + 1)
        end if
+       !---------------------------------------------------------------------------------
 
  1    return 
        end
@@ -362,13 +369,17 @@
        real :: sum !the aggregate sum of all (number - avg) **2 operations
        !------------------------------------------------------------------
 
+
+	   !-----Error checking/check for small array-----
        if (size <= 0) then
        		go to 1
        else if (size == 1) then
        		Variance = 0
        		go to 1
        end if
+       !----------------------------------------------
 
+       !-------------Compute Value-------------
        avg = Mean(array, size)
        sum = 0
 
@@ -377,7 +388,11 @@
        end do
 
        Variance = sum/size
+       !---------------------------------------
 
  1     return
        end
        !========================== End Function - Variance ===========================
+
+
+       !=======================================================End Program Stats===================================================
